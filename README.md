@@ -13,6 +13,11 @@
 - 💾 **数据导入导出** - 支持 JSON 序列化/反序列化
 - 🛠️ **自定义插件** - 支持 自定义插件，内置常用的的插件（minimap, cursorline, viewsync）
 
+## 效果
+<img width="2091" height="678" alt="image" src="https://github.com/user-attachments/assets/f6a9ad64-1e1b-4cb5-b2e4-4ca3b22b2b65" />
+<img width="2067" height="662" alt="image" src="https://github.com/user-attachments/assets/d8dba78b-bc11-49a8-9ab7-c7304672f2d8" />
+
+
 ## 安装
 
 ```bash
