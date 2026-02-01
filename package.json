@@ -1,0 +1,41 @@
+{
+  "name": "d3timeline",
+  "version": "1.0.0",
+  "description": "A lightweight timeline implemented with D3.js",
+  "repository": "https://github.com/ElvisWangTech/D3Timeline.git",
+  "author": "Elvis Wang <yiwei016@163.com>",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.em.js",
+  "module": "./dist/index.em.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.em.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "docs"
+  ],
+  "scripts": {
+    "build": "vite build && npm run build:example && npm run build:types && npm run doc",
+    "build:watch": "tsc && vite build --watch",
+    "build:types": "tsc --project tsconfig.types.json",
+    "build:example": "vite build --config ./example/vite.config.ts",
+    "example": "vite",
+    "doc": "npx typedoc src"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/node": "^25.0.10",
+    "typedoc": "^0.28.16",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-bundle-obfuscator": "^1.10.0"
+  },
+  "dependencies": {
+    "d3": "^7.9.0"
+  }
+}

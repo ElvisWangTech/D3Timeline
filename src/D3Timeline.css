@@ -1,0 +1,85 @@
+/* D3Timeline.css */
+
+.d3-timeline {
+    display: block;
+    cursor: grab;
+}
+
+.d3-timeline:active {
+    cursor: grabbing;
+}
+
+/* 时间线样式 */
+.d3-timeline-bg {
+    opacity: 0.1;
+    rx: 8;
+}
+
+.d3-timeline-line {
+    fill: none;
+    stroke-width: 3;
+    cursor: pointer;
+}
+
+.d3-timeline-label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 事件样式 */
+.d3-event-point {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.d3-event-point:hover {
+    transform: scale(1.2);
+}
+
+.d3-event-range {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.d3-event-range:hover {
+    filter: url(#drop-shadow) brightness(1.2);
+}
+
+.d3-event-text {
+    font-size: 12px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+/* 轴样式 */
+.d3-axis {
+    font-size: 12px;
+}
+
+.d3-axis path,
+.d3-axis line {
+    fill: none;
+    stroke: #333;
+    shape-rendering: crispEdges;
+}
+
+/* 网格样式 */
+.d3-grid line {
+    stroke: #e0e0e0;
+    stroke-dasharray: 3, 3;
+    opacity: 0.7;
+}
+
+/* 工具提示样式 */
+.d3-timeline-tooltip {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1000;
+    max-width: 250px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
