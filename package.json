@@ -1,9 +1,13 @@
 {
-  "name": "d3timeline",
+  "name": "@yiwei016/d3timeline",
   "version": "1.0.0",
   "description": "A lightweight timeline implemented with D3.js",
   "repository": "https://github.com/ElvisWangTech/D3Timeline.git",
   "author": "Elvis Wang <yiwei016@163.com>",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.em.js",
@@ -16,8 +20,7 @@
     }
   },
   "files": [
-    "dist",
-    "docs"
+    "dist"
   ],
   "scripts": {
     "build": "vite build && npm run build:example && npm run build:types && npm run doc",

@@ -19,30 +19,13 @@
 
 📚 [演示地址](https://elviswangtech.github.io/d3timeline-example/)
 
-## 安装
-
-```bash
-npm install
-```
-
-## 开发
-
-#### 启动开发服务器
-```bash
-npm run example
-```
-
-#### 构建生产版本
-```bash
-npm run build
-```
-
-#### 生成文档
-```bash
-npm run doc
-```
 
 ## 快速开始
+### 安装npm包
+```bash
+npm install @yiwei016/d3timeline
+```
+### 使用示例
 ```typescript
 import D3Timeline from 'd3timeline';
 
@@ -67,6 +50,30 @@ timeline.on('click', ({ data }) => {
 
 ## API 文档
 详见 [TypeDoc 生成的文档](https://elviswangtech.github.io/d3timeline-doc/)
+
+## 安装
+
+```bash
+npm install
+```
+
+## 开发
+
+### 启动开发服务器
+```bash
+npm run example
+```
+
+### 构建生产版本
+```bash
+npm run build
+```
+
+### 生成文档
+```bash
+npm run doc
+```
+
 
 ## 许可证
 MIT
