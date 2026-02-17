@@ -15,7 +15,4 @@ export default defineConfig({
     reportCompressedSize: true,
     chunkSizeWarningLimit: 500,
   },
-  server: {
-    open: "/example/index.html",
-  },
 });

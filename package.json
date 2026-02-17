@@ -24,11 +24,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build && npm run build:example && npm run build:types && npm run doc",
+    "build": "vite build && npm run build:types && npm run doc",
     "build:watch": "tsc && vite build --watch",
     "build:types": "tsc --project tsconfig.types.json",
-    "build:example": "vite build --config ./example/vite.config.ts",
-    "example": "vite",
     "doc": "npx typedoc src"
   },
   "devDependencies": {
