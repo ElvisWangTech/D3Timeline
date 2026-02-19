@@ -11,7 +11,7 @@
 - 🌍 **多语言** - 内置中英文支持，可扩展更多语言
 - 📱 **响应式** - 自动适应容器尺寸变化
 - 💾 **数据导入导出** - 支持 JSON 序列化/反序列化
-- 🛠️ **自定义插件** - 支持 自定义插件，内置常用的的插件（minimap, cursorline, viewsync）
+- 🛠️ **自定义插件** - 支持 自定义插件，内置常用的的插件（ZoomSlider, CursorLine, MultiSyncV等）
 
 ## 效果
 <img width="2091" height="678" alt="image" src="https://github.com/user-attachments/assets/f6a9ad64-1e1b-4cb5-b2e4-4ca3b22b2b65" />
@@ -25,9 +25,13 @@
 ```bash
 npm install @yiwei016/d3timeline
 ```
+### 安装官方插件
+```bash
+npm install @yiwei016/d3timeline-plugins
+```
 ### 使用示例
 ```typescript
-import D3Timeline from 'd3timeline';
+import D3Timeline from '@yiwei016/d3timeline';
 
 // 创建实例
 const timeline = new D3Timeline(container);
@@ -51,18 +55,13 @@ timeline.on('click', ({ data }) => {
 ## API 文档
 详见 [TypeDoc 生成的文档](https://elviswangtech.github.io/d3timeline-doc/)
 
-## 安装
+## 本地安装
 
 ```bash
 npm install
 ```
 
-## 开发
-
-### 启动开发服务器
-```bash
-npm run example
-```
+## 本地开发
 
 ### 构建生产版本
 ```bash

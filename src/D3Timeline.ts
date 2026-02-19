@@ -82,6 +82,8 @@ export interface D3TimelineContext {
 export interface D3TimelinePlugin {
   /** 安装方法 */
   install: (context: D3TimelineContext) => void;
+  /** 卸载方法 */
+  uninstall: () => void;
 }
 
 /**
@@ -490,6 +492,12 @@ export class D3Timeline {
         timeRange: this.timeRange,
         svg: this.svg,
       });
+    });
+  }
+
+  private detachPlugins() {
+    D3Timeline.plugins.forEach((plug) => {
+      plug.uninstall();
     });
   }
 
@@ -1501,7 +1509,6 @@ export class D3Timeline {
    * 显示阶段连线
    */
   public showStageLines() {
-    // TODO: 待完成
     this.stageLinesVisible = true;
     this.stageLineGroup.attr("style", "display: ''");
   }
@@ -1509,7 +1516,6 @@ export class D3Timeline {
    * 隐藏阶段连线
    */
   public hideStageLines() {
-    // TODO: 待完成
     this.stageLinesVisible = false;
     this.stageLineGroup.attr("style", "display: none");
   }
@@ -1667,6 +1673,7 @@ export class D3Timeline {
     this.removeEventListeners();
     this.tooltip.remove();
     this.svg.remove();
+    this.detachPlugins();
   }
   /**
    * 插件集合
