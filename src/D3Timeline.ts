@@ -43,6 +43,8 @@ export interface TimelineOptions {
   stageLineParams?: StageLineParams;
   /** 语言：符合ISO639_1，比如：'zh', 'en'，默认：en */
   locale?: Locale;
+  /** 插件列表 */
+  plugins?: D3TimelinePlugin[];
 }
 
 /**
@@ -84,6 +86,8 @@ export interface D3TimelinePlugin {
   install: (context: D3TimelineContext) => void;
   /** 卸载方法 */
   uninstall: () => void;
+  /* 可选的窗口调整大小回调 */
+  onResize?: () => void;
 }
 
 /**
@@ -245,6 +249,7 @@ export class D3Timeline {
       animation: false,
     },
     locale: "en",
+    plugins: [],
   };
 
   /**
@@ -484,7 +489,7 @@ export class D3Timeline {
   }
 
   private setupPlugins() {
-    D3Timeline.plugins.forEach((plug) => {
+    this.options.plugins.forEach((plug) => {
       plug.install({
         instance: this,
         container: this.container,
@@ -496,7 +501,7 @@ export class D3Timeline {
   }
 
   private detachPlugins() {
-    D3Timeline.plugins.forEach((plug) => {
+    this.options.plugins.forEach((plug) => {
       plug.uninstall();
     });
   }
@@ -1543,9 +1548,9 @@ export class D3Timeline {
 
   /**
    * 响应式调整大小 - 根据容器尺寸重新计算并渲染
-   * @returns {void}
+   * @returns {Promise<void>} 调整完成的 Promise
    */
-  public resize(): void {
+  public async resize(): Promise<void> {
     const containerNode = this.container.node() as HTMLElement;
     this.options.width = containerNode.clientWidth || this.options.width;
     this.options.height = this.calculateHeight();
@@ -1584,7 +1589,14 @@ export class D3Timeline {
     );
 
     this.render(true);
-    this.fitRange();
+    await this.fitRange();
+
+    // 插件的onResize回调
+    this.options.plugins.forEach((plugin) => {
+      if (plugin.onResize) {
+        plugin.onResize();
+      }
+    });
   }
 
   /**
@@ -1598,6 +1610,13 @@ export class D3Timeline {
     this.timeRange = { start, end };
     this.xScale.domain([start, end]);
     this.render();
+  }
+  /**
+   * 获取当前设置的时间范围
+   * @returns {TimeRange} 包含开始时间和结束时间的对象副本
+   */
+  public getTimeRange(): TimeRange {
+    return { ...this.timeRange };
   }
 
   /**
@@ -1675,10 +1694,6 @@ export class D3Timeline {
     this.svg.remove();
     this.detachPlugins();
   }
-  /**
-   * 插件集合
-   */
-  public static plugins: D3TimelinePlugin[] = [];
 }
 
 // 默认导出
