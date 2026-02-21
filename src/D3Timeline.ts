@@ -37,6 +37,8 @@ export interface TimelineOptions {
   zoomMin?: number;
   /** 最大缩放时间范围（毫秒），默认1年 */
   zoomMax?: number;
+  /** 最小时间范围（Date数组，长度为2，分别表示最小开始时间和最小结束时间） */
+  maxTimeRange?: TimeRange;
   /** 动画持续时间（毫秒） */
   animationDuration?: number;
   /** 阶段线参数 */
@@ -239,6 +241,7 @@ export class D3Timeline {
     axisHeight: 20,
     zoomMin: 8 * 24 * 60 * 60 * 1000, // 2周
     zoomMax: 365 * 24 * 60 * 60 * 1000, // 1年
+    maxTimeRange: this.getDefaultMaxTimeRange(),
     animationDuration: 300,
     stageLineParams: {
       path: "straight",
@@ -286,7 +289,6 @@ export class D3Timeline {
 
   private init(): void {
     this.setupLocales();
-    this.setupTimeRange();
     this.setupSVG();
     this.setupScales();
     this.setupGroups();
@@ -297,23 +299,11 @@ export class D3Timeline {
     this.render();
   }
 
-  private setupTimeRange() {
+  private getDefaultMaxTimeRange() {
     const currentDate = new Date();
-    const startDate = new Date(
-      currentDate.getFullYear() - 10,
-      currentDate.getMonth(),
-      currentDate.getDate(),
-    );
-    const endDate = new Date(
-      currentDate.getFullYear() + 10,
-      currentDate.getMonth(),
-      currentDate.getDate(),
-    );
-
-    this.timeRange = {
-      start: startDate,
-      end: endDate,
-    };
+    const start = new Date(currentDate.getFullYear() - 10, currentDate.getMonth(), currentDate.getDate());
+    const end = new Date(currentDate.getFullYear() + 10, currentDate.getMonth(), currentDate.getDate());
+    return { start, end };
   }
 
   private setupLocales() {
@@ -384,7 +374,7 @@ export class D3Timeline {
   private setupScales(): void {
     this.xScale = d3
       .scaleTime()
-      .domain([this.timeRange.start, this.timeRange.end])
+      .domain([this.options.maxTimeRange.start, this.options.maxTimeRange.end])
       .range([
         this.options.margin.left,
         this.options.width - this.options.margin.right,
@@ -452,7 +442,7 @@ export class D3Timeline {
   private setupZoom(): void {
     // 根据时间范围限制计算缩放比例限制
     const initialRange =
-      this.timeRange.end.getTime() - this.timeRange.start.getTime();
+      this.options.maxTimeRange.end.getTime() - this.options.maxTimeRange.start.getTime();
     const minScale = this.options.zoomMax / initialRange;
     const maxScale = initialRange / this.options.zoomMin;
 
@@ -1465,7 +1455,7 @@ export class D3Timeline {
 
   private async scaleTo(range: TimeRange) {
     const fullDiffTime =
-      this.timeRange.end.getTime() - this.timeRange.start.getTime();
+      this.options.maxTimeRange.end.getTime() - this.options.maxTimeRange.start.getTime();
     const startTime = range.start.getTime();
     const endTime = range.end.getTime();
     const diffTime = endTime - startTime;
@@ -1502,6 +1492,7 @@ export class D3Timeline {
     );
     if (range[0] && range[1]) {
       const targetRange = { start: range[0], end: range[1] };
+      this.timeRange = targetRange;
       try {
         await this.translateTo(targetRange);
         await this.scaleTo(targetRange);
@@ -1510,6 +1501,26 @@ export class D3Timeline {
       }
     }
   }
+
+  private getTransformByRange(range: TimeRange) {
+    const fullDiffTime =
+      this.options.maxTimeRange.end.getTime() - this.options.maxTimeRange.start.getTime();
+    const startTime = range.start.getTime();
+    const endTime = range.end.getTime();
+    const diffTime = endTime - startTime;
+    const oneday = 24 * 60 * 60 * 1000;
+    const k = fullDiffTime / (diffTime + oneday);
+    const midDate = new Date((startTime + endTime) / 2);
+    const x = this.xScale(midDate);
+    return new d3.ZoomTransform(k, x, 0);
+  }
+
+  private transformByRange(range: TimeRange) {
+    const transform = this.getTransformByRange(range);
+    this.svg.call(this.zoom.translateTo, transform.x, transform.y);
+    this.svg.call(this.zoom.scaleTo, transform.k, [transform.x, transform.y]);
+  }
+
   /**
    * 显示阶段连线
    */
@@ -1608,8 +1619,8 @@ export class D3Timeline {
    */
   public setTimeRange(start: Date, end: Date): void {
     this.timeRange = { start, end };
-    this.xScale.domain([start, end]);
     this.render();
+    this.transformByRange(this.timeRange);
   }
   /**
    * 获取当前设置的时间范围
@@ -1667,7 +1678,6 @@ export class D3Timeline {
       this.timelines = [...data.timelines];
       this.events = [...data.events];
       this.timeRange = { ...data.timeRange };
-      this.xScale.domain([this.timeRange.start, this.timeRange.end]);
       this.resize();
       return true;
     } catch (error: any) {
