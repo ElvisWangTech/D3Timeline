@@ -181,8 +181,8 @@ export type EventType = "click" | "zoom" | "zoom.end";
  */
 export type EventMap = {
   click: { data: EventData };
-  zoom: { scale: number; x: number; y: number };
-  "zoom.end": { scale: number; x: number; y: number };
+  zoom: { scale: number; x: number; y: number; timeRange: TimeRange };
+  "zoom.end": { scale: number; x: number; y: number; timeRange: TimeRange };
 };
 /**
  * 事件回调函数类型定义
@@ -505,13 +505,16 @@ export class D3Timeline {
             scale: event.transform.k,
             x: event.transform.x,
             y: event.transform.y,
+            timeRange: this.timeRange,
           });
         })
         .on("zoom.end", (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+          this.handleZoomEnd(event);
           this.emit("zoom.end", {
             scale: event.transform.k,
             x: event.transform.x,
             y: event.transform.y,
+            timeRange: this.timeRange,
           });
         });
     }
@@ -1000,6 +1003,21 @@ export class D3Timeline {
     this.renderGrid(xScaleR);
 
     this.lastTransform = transform;
+    const [start, end] = xScaleR.domain();
+    this.timeRange = {
+      start,
+      end,
+    };
+  }
+
+  private handleZoomEnd(event: d3.D3ZoomEvent<SVGSVGElement, unknown>): void {
+    const { transform } = event;
+    const xScaleR = transform.rescaleX(this.xScale);
+    const [start, end] = xScaleR.domain();
+    this.timeRange = {
+      start,
+      end,
+    };
   }
 
   private renderEvents(): void {
