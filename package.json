@@ -27,11 +27,13 @@
     "build": "vite build && npm run build:types && npm run doc",
     "build:watch": "tsc && vite build --watch",
     "build:types": "tsc --project tsconfig.types.json",
-    "doc": "npx typedoc src"
+    "doc": "npx typedoc src",
+    "deploy": "gh-pages -d docs"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
     "@types/node": "^25.0.10",
+    "gh-pages": "6.3.0",
     "typedoc": "^0.28.16",
     "typescript": "~5.9.3",
     "vite": "^7.2.4"
